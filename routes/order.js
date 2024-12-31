@@ -9,6 +9,7 @@ const {
   updateCart,
   saveCartOrder,
   updateOrderStatus,
+  updateCustomDetails,
   updateProductRating,
   voidProducts,
   editOrder,
@@ -36,6 +37,7 @@ router.put(
   adminGratisCheck,
   updateOrderStatus
 );
+router.put("/gratis/update-custom-details", authCheck, updateCustomDetails);
 router.put("/gratis/update-product-rating", authCheck, updateProductRating);
 router.put("/gratis/void-product", authCheck, adminGratisCheck, voidProducts);
 router.put("/gratis/edit-order", authCheck, editOrder);

@@ -64,6 +64,18 @@ const orderSchema = new mongoose.Schema(
     vatTwelve: Number,
     vatExempt: Number,
     zeroRated: Number,
+    customDetails: [
+      {
+        description: String,
+        value: String,
+      },
+    ],
+    customDetails2: [
+      {
+        description: String,
+        value: String,
+      },
+    ],
   },
   { timestamps: true }
 );

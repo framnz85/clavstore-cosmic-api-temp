@@ -134,11 +134,13 @@ const productSchema = new mongoose.Schema(
       enum: ["percent", "number"],
       default: "percent",
     },
+    lotNumber: String,
+    expiration: Date,
   },
   { timestamps: true }
 );
 
-// productSchema.index({ title: "text" });
+productSchema.index({ title: "text" });
 
 const Product = conn.model("GratisProduct", productSchema);
 

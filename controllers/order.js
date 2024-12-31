@@ -762,6 +762,38 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
+exports.updateCustomDetails = async (req, res) => {
+  const estoreid = req.headers.estoreid;
+  const email = req.user.email;
+  const { orderid, customDetails, customDetails2 } = req.body;
+
+  try {
+    const user = await User.findOne({ email }).exec();
+    if (user) {
+      const order = await Order.findOneAndUpdate(
+        {
+          _id: new ObjectId(orderid),
+          estoreid: new Object(estoreid),
+        },
+        {
+          customDetails,
+          customDetails2,
+        },
+        { new: true }
+      );
+      if (order) {
+        res.json(order);
+      } else {
+        res.json({ err: "Order does not exist." });
+      }
+    } else {
+      res.json({ err: "Cannot update the order custom details." });
+    }
+  } catch (error) {
+    res.json({ err: "Updating order custom details fails. " + error.message });
+  }
+};
+
 exports.updateProductRating = async (req, res) => {
   const estoreid = req.headers.estoreid;
   const email = req.user.email;
@@ -786,10 +818,10 @@ exports.updateProductRating = async (req, res) => {
         res.json({ err: "Order does not exist." });
       }
     } else {
-      res.json({ err: "Cannot update the order status." });
+      res.json({ err: "Cannot update the order product details." });
     }
   } catch (error) {
-    res.json({ err: "Updating order status fails. " + error.message });
+    res.json({ err: "Updating order product details fails. " + error.message });
   }
 };
 
