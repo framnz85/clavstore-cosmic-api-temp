@@ -13,7 +13,7 @@ const { authCheck, adminGratisCheck } = require("../middlewares/auth");
 router.get("/gratis/get-category/:catid", authCheck, getCategory);
 router.get("/gratis/get-categories", getCategories);
 router.get(
-  "/gratis/check-image-owner-category/:publicid/:defaultestore",
+  "/gratis/check-image-owner-category/:publicid",
   authCheck,
   adminGratisCheck,
   checkImageUser

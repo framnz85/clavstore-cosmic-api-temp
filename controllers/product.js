@@ -494,13 +494,30 @@ exports.updateProduct = async (req, res) => {
 
     const finalRatings =
       ratings.reduce((partialSum, a) => partialSum + a.rate, 0) +
-      parseFloat(values.rateGroup.rateDefault.ratings) *
-        parseFloat(values.rateGroup.rateDefault.ratingCount);
+      parseFloat(
+        values.rateGroup &&
+          values.rateGrouprateDefault &&
+          values.rateGroup.rateDefault.ratings
+          ? values.rateGroup.rateDefault.ratings
+          : 0
+      ) *
+        parseFloat(
+          values.rateGroup &&
+            values.rateGrouprateDefault &&
+            values.rateGroup.rateDefault.ratingCount
+            ? values.rateGroup.rateDefault.ratingCount
+            : 0
+        );
     const finalRatingCount =
       parseFloat(ratings.length) +
-      parseFloat(values.rateGroup.rateDefault.ratingCount);
+      parseFloat(
+        values.rateGroup &&
+          values.rateGrouprateDefault &&
+          values.rateGroup.rateDefault.ratingCount
+          ? values.rateGroup.rateDefault.ratingCount
+          : 0
+      );
     const finalRating = finalRatings / finalRatingCount;
-
     let product = await Product.findOneAndUpdate(
       {
         _id: new ObjectId(prodid),
@@ -699,22 +716,17 @@ exports.deleteWaitingProduct = async (req, res) => {
 exports.checkImageUser = async (req, res) => {
   const estoreid = req.headers.estoreid;
   const publicid = req.params.publicid;
-  const defaultestore = req.params.defaultestore;
 
   try {
     let product = await Product.findOne({
       images: {
         $elemMatch: { public_id: publicid },
       },
-      estoreid: new ObjectId(defaultestore),
+      estoreid: { $ne: new ObjectId(estoreid) },
     }).exec();
 
     if (product) {
-      if (estoreid === defaultestore) {
-        res.json({ delete: true });
-      } else {
-        res.json({ delete: false });
-      }
+      res.json({ delete: false });
     } else {
       product = await Product.findOne({
         images: {
@@ -723,8 +735,13 @@ exports.checkImageUser = async (req, res) => {
         estoreid: new ObjectId(estoreid),
       }).exec();
 
-      if (product && product.images[0] && product.images[0].fromid) {
-        if (product.images[0].fromid === estoreid) {
+      const theImage =
+        product && product.images
+          ? product.images.filter((img) => img.public_id === publicid)
+          : [];
+
+      if (theImage[0].length > 0 && theImage[0].fromid) {
+        if (theImage[0].fromid === estoreid) {
           res.json({ delete: true });
         } else {
           res.json({ delete: false });

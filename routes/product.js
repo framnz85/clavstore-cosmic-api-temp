@@ -52,7 +52,7 @@ router.get(
   inventorySummary
 );
 router.get(
-  "/gratis/check-image-owner-product/:publicid/:defaultestore",
+  "/gratis/check-image-owner-product/:publicid",
   authCheck,
   adminGratisCheck,
   checkImageUser

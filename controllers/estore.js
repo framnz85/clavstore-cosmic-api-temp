@@ -358,7 +358,10 @@ exports.copyingEstore = async (req, res) => {
 
         const copyingProducts = products.map((product) => {
           const images = product.images.map((img) => {
-            return { ...img, fromid: new ObjectId(fromid) };
+            return {
+              ...img,
+              fromid: img.fromid ? img.fromid : new ObjectId(fromid),
+            };
           });
           return { ...product._doc, images, estoreid: estore._id };
         });
@@ -375,7 +378,10 @@ exports.copyingEstore = async (req, res) => {
 
           categories.forEach(async (category) => {
             const images = category.images.map((img) => {
-              return { ...img, fromid: new ObjectId(fromid) };
+              return {
+                ...img,
+                fromid: img.fromid ? img.fromid : new ObjectId(fromid),
+              };
             });
             const newCategory = new Category({
               name: category.name,

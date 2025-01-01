@@ -48,22 +48,17 @@ exports.getCategories = async (req, res) => {
 exports.checkImageUser = async (req, res) => {
   const estoreid = req.headers.estoreid;
   const publicid = req.params.publicid;
-  const defaultestore = req.params.defaultestore;
 
   try {
     let category = await Category.findOne({
       images: {
         $elemMatch: { public_id: publicid },
       },
-      estoreid: new ObjectId(defaultestore),
+      estoreid: { $ne: new ObjectId(estoreid) },
     }).exec();
 
     if (category) {
-      if (estoreid === defaultestore) {
-        res.json({ delete: true });
-      } else {
-        res.json({ delete: false });
-      }
+      res.json({ delete: false });
     } else {
       category = await Category.findOne({
         images: {
@@ -72,8 +67,13 @@ exports.checkImageUser = async (req, res) => {
         estoreid: new ObjectId(estoreid),
       }).exec();
 
-      if (category && category.images[0] && category.images[0].fromid) {
-        if (category.images[0].fromid === estoreid) {
+      const theImage =
+        category && category.images
+          ? category.images.filter((img) => img.public_id === publicid)
+          : [];
+
+      if (theImage[0].length > 0 && theImage[0].fromid) {
+        if (theImage[0].fromid === estoreid) {
           res.json({ delete: true });
         } else {
           res.json({ delete: false });
