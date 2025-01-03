@@ -136,6 +136,7 @@ const productSchema = new mongoose.Schema(
     },
     lotNumber: String,
     expiration: Date,
+    showToUsersOnly: Boolean
   },
   { timestamps: true }
 );
